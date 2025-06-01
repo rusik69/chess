@@ -1,0 +1,97 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        goos: [linux, windows, darwin]
+        goarch: [amd64, arm64]
+        exclude:
+          - goos: windows
+            goarch: arm64
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v4
+
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: 1.21
+
+    - name: Get version from tag
+      id: get_version
+      run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+
+    - name: Build binary
+      env:
+        GOOS: ${{ matrix.goos }}
+        GOARCH: ${{ matrix.goarch }}
+        CGO_ENABLED: 0
+      run: |
+        mkdir -p dist
+        if [ "$GOOS" = "windows" ]; then
+          BINARY_NAME="chess-game-${{ steps.get_version.outputs.VERSION }}-${{ matrix.goos }}-${{ matrix.goarch }}.exe"
+        else
+          BINARY_NAME="chess-game-${{ steps.get_version.outputs.VERSION }}-${{ matrix.goos }}-${{ matrix.goarch }}"
+        fi
+        go build -ldflags="-s -w" -o "dist/$BINARY_NAME" ./
+        
+        # Create archive
+        cd dist
+        if [ "$GOOS" = "windows" ]; then
+          zip "${BINARY_NAME%.exe}.zip" "$BINARY_NAME"
+          echo "ASSET_NAME=${BINARY_NAME%.exe}.zip" >> $GITHUB_ENV
+        else
+          tar -czf "${BINARY_NAME}.tar.gz" "$BINARY_NAME"
+          echo "ASSET_NAME=${BINARY_NAME}.tar.gz" >> $GITHUB_ENV
+        fi
+
+    - name: Upload Release Asset
+      uses: softprops/action-gh-release@v1
+      with:
+        files: dist/${{ env.ASSET_NAME }}
+        tag_name: ${{ steps.get_version.outputs.VERSION }}
+        name: Release ${{ steps.get_version.outputs.VERSION }}
+        body: |
+          ## Chess Game Release ${{ steps.get_version.outputs.VERSION }}
+          
+          ### Features
+          - Complete chess game implementation with emoji pieces
+          - AI opponent with minimax algorithm and alpha-beta pruning
+          - Terminal-based interface
+          - Cross-platform support
+          
+          ### Downloads
+          Choose the appropriate binary for your platform:
+          - **Linux AMD64**: chess-game-${{ steps.get_version.outputs.VERSION }}-linux-amd64.tar.gz
+          - **Linux ARM64**: chess-game-${{ steps.get_version.outputs.VERSION }}-linux-arm64.tar.gz
+          - **macOS AMD64**: chess-game-${{ steps.get_version.outputs.VERSION }}-darwin-amd64.tar.gz
+          - **macOS ARM64**: chess-game-${{ steps.get_version.outputs.VERSION }}-darwin-arm64.tar.gz
+          - **Windows AMD64**: chess-game-${{ steps.get_version.outputs.VERSION }}-windows-amd64.zip
+          
+          ### Installation
+          1. Download the appropriate binary for your platform
+          2. Extract the archive
+          3. Run the executable
+          
+          ### Usage
+          ```bash
+          ./chess-game
+          ```
+          
+          Enjoy playing chess! 🎉
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 

@@ -1,0 +1,35 @@
+name: Local Test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-setup:
+    name: Test Setup
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v4
+
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: 1.21
+
+    - name: Verify Go installation
+      run: go version
+
+    - name: Download dependencies
+      run: go mod download
+
+    - name: Run basic tests
+      run: go test -v ./...
+
+    - name: Build project
+      run: go build -v ./
+
+    - name: Test binary
+      run: |
+        echo "quit" | timeout 10s ./chess-game || true
+        echo "Binary test completed" 
