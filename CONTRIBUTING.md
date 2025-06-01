@@ -5,7 +5,7 @@ Thank you for your interest in contributing to the Chess Game project! This docu
 ## Development Setup
 
 ### Prerequisites
-- Go 1.19 or later
+- Go 1.24 or later
 - Git
 - Make (optional, but recommended)
 
@@ -83,7 +83,7 @@ chess-game/
 ### Continuous Integration
 Every push and pull request triggers:
 
-1. **Multi-version Testing**: Go 1.19, 1.20, 1.21
+1. **Go 1.24 Testing**: Latest Go version
 2. **Code Quality Checks**:
    - `go vet` static analysis
    - `gofmt` formatting check

@@ -54,7 +54,7 @@ make help
 
 ### Manual Commands
 
-1. Make sure you have Go installed (version 1.21 or later)
+1. Make sure you have Go installed (version 1.24 or later)
 2. Clone or download this project
 3. Navigate to the project directory
 4. Run the game:
@@ -282,7 +282,7 @@ Potential features that could be added:
 This project uses GitHub Actions for continuous integration and deployment:
 
 ### **Continuous Integration**
-- **Multi-version Testing**: Tests against Go 1.19, 1.20, and 1.21
+- **Go 1.24 Testing**: Tests against the latest Go version
 - **Cross-platform Builds**: Builds for Linux, macOS, and Windows on AMD64 and ARM64
 - **Code Quality Checks**: 
   - `go vet` for static analysis
@@ -308,6 +308,16 @@ This project uses GitHub Actions for continuous integration and deployment:
 - All tests must pass before builds are created
 - Code must pass linting and security checks
 - Coverage reports are generated for all builds
+
+### **Action Versions**
+All workflows use the latest stable versions of GitHub Actions:
+- `actions/checkout@v4` - Repository checkout
+- `actions/setup-go@v4` - Go environment setup
+- `actions/cache@v4` - Dependency caching
+- `actions/upload-artifact@v4` - Artifact storage
+- `golangci/golangci-lint-action@v4` - Code linting
+- `codecov/codecov-action@v4` - Coverage reporting
+- `softprops/action-gh-release@v2` - Release creation
 
 To create a new release:
 ```bash

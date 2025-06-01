@@ -58,7 +58,7 @@ jobs:
         fi
 
     - name: Upload Release Asset
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@v2
       with:
         files: dist/${{ env.ASSET_NAME }}
         tag_name: ${{ steps.get_version.outputs.VERSION }}
