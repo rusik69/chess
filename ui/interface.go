@@ -1,3 +1,4 @@
+// Package ui provides the terminal-based user interface for the chess game.
 package ui
 
 import (
@@ -5,7 +6,6 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
-	"runtime"
 	"strings"
 	"time"
 
@@ -30,14 +30,9 @@ func NewInterface() *Interface {
 
 // clearScreen clears the terminal screen
 func (ui *Interface) clearScreen() {
-	var cmd *exec.Cmd
-	if runtime.GOOS == "windows" {
-		cmd = exec.Command("cmd", "/c", "cls")
-	} else {
-		cmd = exec.Command("clear")
-	}
+	cmd := exec.Command("clear")
 	cmd.Stdout = os.Stdout
-	cmd.Run()
+	_ = cmd.Run() // Ignore error as clearing screen is not critical
 }
 
 // displayWelcome displays the welcome message

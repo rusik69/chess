@@ -9,10 +9,15 @@ import (
 type GameState int
 
 const (
+	// Playing indicates the game is in progress
 	Playing GameState = iota
+	// Check indicates a player is in check
 	Check
+	// Checkmate indicates the game has ended in checkmate
 	Checkmate
+	// Stalemate indicates the game has ended in stalemate
 	Stalemate
+	// Draw indicates the game has ended in a draw
 	Draw
 )
 
@@ -29,7 +34,7 @@ func (gs GameState) String() string {
 	case Draw:
 		return "Draw"
 	default:
-		return "Unknown"
+		return UnknownValue
 	}
 }
 

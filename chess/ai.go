@@ -32,7 +32,7 @@ func NewAI(color Color, depth int) *AI {
 }
 
 // GetBestMove returns the best move for the AI player using iterative deepening
-func (ai *AI) GetBestMove(game *Game) (Position, Position, bool) {
+func (ai *AI) GetBestMove(game *Game) (from Position, to Position, found bool) {
 	if game.CurrentPlayer != ai.color {
 		return Position{}, Position{}, false
 	}

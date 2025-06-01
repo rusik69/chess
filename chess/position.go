@@ -2,6 +2,11 @@ package chess
 
 import "fmt"
 
+// Constants for position validation
+const (
+	InvalidPosition = "invalid"
+)
+
 // Position represents a position on the chess board
 type Position struct {
 	Row int
@@ -20,12 +25,10 @@ func (p Position) IsValid() bool {
 
 // String returns the algebraic notation of the position (e.g., "e4")
 func (p Position) String() string {
-	if !p.IsValid() {
-		return "invalid"
+	if p.Row < 0 || p.Row > 7 || p.Col < 0 || p.Col > 7 {
+		return InvalidPosition
 	}
-	col := string(rune('a' + p.Col))
-	row := fmt.Sprintf("%d", 8-p.Row)
-	return col + row
+	return fmt.Sprintf("%c%d", 'a'+p.Col, 8-p.Row)
 }
 
 // FromAlgebraic converts algebraic notation to Position

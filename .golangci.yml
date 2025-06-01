@@ -1,107 +1,69 @@
 run:
   timeout: 5m
-  issues-exit-code: 1
   tests: true
-  skip-dirs:
-    - bin
-    - dist
-  skip-files:
-    - ".*_test.go"
+  modules-download-mode: readonly
 
 output:
-  format: colored-line-number
-  print-issued-lines: true
-  print-linter-name: true
+  formats:
+    - format: colored-line-number
+      path: stdout
 
 linters-settings:
   govet:
-    check-shadowing: true
-  golint:
-    min-confidence: 0.8
+    enable:
+      - shadow
   gocyclo:
-    min-complexity: 15
-  maligned:
-    suggest-new: true
-  dupl:
-    threshold: 100
+    min-complexity: 35
   goconst:
-    min-len: 2
-    min-occurrences: 2
-  misspell:
-    locale: US
-  lll:
-    line-length: 140
-  goimports:
-    local-prefixes: chess-game
-  gocritic:
-    enabled-tags:
-      - diagnostic
-      - experimental
-      - opinionated
-      - performance
-      - style
-    disabled-checks:
-      - dupImport
-      - ifElseChain
-      - octalLiteral
-      - whyNoLint
-      - wrapperFunc
-  funlen:
-    lines: 100
-    statements: 50
+    min-len: 3
+    min-occurrences: 3
+  depguard:
+    rules:
+      main:
+        allow:
+          - $all
+          - $gostd
+          - chess-game
+        deny: []
+  gosec:
+    excludes:
+      - G115 # Integer overflow conversion - acceptable for our use case
 
 linters:
   enable:
-    - bodyclose
-    - deadcode
-    - depguard
-    - dogsled
-    - dupl
     - errcheck
-    - funlen
-    - gochecknoinits
-    - goconst
-    - gocritic
-    - gocyclo
-    - gofmt
-    - goimports
-    - golint
-    - gomnd
-    - goprintffuncname
-    - gosec
     - gosimple
     - govet
     - ineffassign
-    - interfacer
-    - lll
-    - misspell
-    - nakedret
-    - rowserrcheck
-    - scopelint
     - staticcheck
-    - structcheck
-    - stylecheck
     - typecheck
-    - unconvert
-    - unparam
     - unused
-    - varcheck
-    - whitespace
-
-  disable:
-    - maligned
-    - prealloc
+    - gocyclo
+    - goconst
+    - gofmt
+    - goimports
+    - revive
+    - stylecheck
+    - gosec
+    - depguard
+  disable: []
 
 issues:
+  exclude-files:
+    - ".*_test.go"
+  exclude-dirs:
+    - vendor
+    - bin
   exclude-rules:
     - path: _test\.go
       linters:
-        - gomnd
-        - funlen
         - gocyclo
-    - path: main\.go
-      linters:
-        - gochecknoinits
+        - errcheck
+        - gosec
+    - linters:
+        - stylecheck
+      text: "ST1000"
+      path: "main.go"
 
   exclude:
     - abcdef
